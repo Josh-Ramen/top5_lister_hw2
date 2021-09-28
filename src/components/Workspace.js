@@ -1,4 +1,5 @@
 import React from "react";
+import ItemCard from "./ItemCard";
 
 export default class Workspace extends React.Component {
     render() {
@@ -15,11 +16,21 @@ export default class Workspace extends React.Component {
                             <div className="item-number">5.</div>
                         </div>
                         <div id="edit-items">
-                            <div className="top5-item">{currentList.items[0]}</div>
-                            <div className="top5-item">{currentList.items[1]}</div>
-                            <div className="top5-item">{currentList.items[2]}</div>
-                            <div className="top5-item">{currentList.items[3]}</div>
-                            <div className="top5-item">{currentList.items[4]}</div>
+                            <ItemCard
+                            currentList={currentList}
+                            index={0}/> 
+                            <ItemCard
+                            currentList={currentList}
+                            index = {1}/> 
+                            <ItemCard
+                            currentList={currentList}
+                            index = {2}/>
+                            <ItemCard
+                            currentList={currentList}
+                            index = {3}/>
+                            <ItemCard
+                            currentList={currentList}
+                            index = {4}/>
                         </div>
                     </div>
                 </div>

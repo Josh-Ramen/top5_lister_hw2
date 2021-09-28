@@ -3,7 +3,8 @@ import ItemCard from "./ItemCard";
 
 export default class Workspace extends React.Component {
     render() {
-        const {currentList} = this.props;
+        const { currentList,
+                renameListItemCallback} = this.props;
         if (currentList) {
             return (
                 <div id="top5-workspace">
@@ -18,19 +19,24 @@ export default class Workspace extends React.Component {
                         <div id="edit-items">
                             <ItemCard
                             currentList={currentList}
-                            index={0}/> 
+                            index={0}
+                            renameListItemCallback={renameListItemCallback}/> 
                             <ItemCard
                             currentList={currentList}
-                            index = {1}/> 
+                            index = {1}
+                            renameListItemCallback={renameListItemCallback}/> 
                             <ItemCard
                             currentList={currentList}
-                            index = {2}/>
+                            index = {2}
+                            renameListItemCallback={renameListItemCallback}/>
                             <ItemCard
                             currentList={currentList}
-                            index = {3}/>
+                            index = {3}
+                            renameListItemCallback={renameListItemCallback}/>
                             <ItemCard
                             currentList={currentList}
-                            index = {4}/>
+                            index = {4}
+                            renameListItemCallback={renameListItemCallback}/>
                         </div>
                     </div>
                 </div>

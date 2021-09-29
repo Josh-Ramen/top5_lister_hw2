@@ -31,9 +31,9 @@ function loadListsFromJSON(jsonFilePath) {
           "nextKey" : 3,
           "counter" : 3,
           "keyNamePairs" : [
-            {"key": "0", "name": "Games"},
-            {"key": "1", "name": "Movies"}, 
-            {"key": "2", "name": "Pink Floyd Songs"}
+            {"key": 0, "name": "Games"},
+            {"key": 1, "name": "Movies"}, 
+            {"key": 2, "name": "Pink Floyd Songs"}
           ]
         }));
       launch();

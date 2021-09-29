@@ -25,7 +25,7 @@ class App extends React.Component {
         this.state = {
             currentList : null,
             sessionData : loadedSessionData,
-            listKeyPairMarkedForDeletion: null
+            keyNamePairMarkedForDeletion: null
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -52,6 +52,8 @@ class App extends React.Component {
         let newKeyNamePair = { "key": newKey, "name": newName };
         let updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
         this.sortKeyNamePairsByName(updatedPairs);
+        console.log("Added a list. New keyNamePairs: ");
+        console.log(updatedPairs);
 
         // CHANGE THE APP STATE SO THAT IT THE CURRENT LIST IS
         // THIS NEW LIST AND UPDATE THE SESSION DATA SO THAT THE
@@ -135,7 +137,7 @@ class App extends React.Component {
     closeCurrentList = () => {
         this.setState(prevState => ({
             currentList: null,
-            listKeyPairMarkedForDeletion : prevState.listKeyPairMarkedForDeletion,
+            keyNamePairMarkedForDeletion : prevState.keyNamePairMarkedForDeletion,
             sessionData: this.state.sessionData
         }), () => {
             // ANY AFTER EFFECTS?
@@ -146,15 +148,48 @@ class App extends React.Component {
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
+        console.log(keyNamePair);
+
         this.setState(({
-            listKeyPairMarkedForDeletion: keyNamePair
+            keyNamePairMarkedForDeletion: keyNamePair
         }), () => {
             // ANY AFTER EFFECTS?
         });
         this.showDeleteListModal();
     }
     confirmDeleteList = () => {
-        console.log(this.state.listKeyPairMarkedForDeletion);
+        // WE MAY NEED TO RESET CURRENT LIST
+        console.log(this.state.keyNamePairMarkedForDeletion);
+
+        if (this.state.currentList != null && this.state.keyNamePairMarkedForDeletion.key === this.state.currentList.key) {
+            this.setState({
+                currentList: null
+            })
+        }
+
+        // REMOVE KEY FROM KEY NAME PAIRS
+        let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
+        console.log("Current keyNamePairs: ");
+        console.log(newKeyNamePairs);
+        newKeyNamePairs.splice(newKeyNamePairs.indexOf(this.state.keyNamePairMarkedForDeletion), 1);
+        console.log("New keyNamePairs: ");
+        console.log(newKeyNamePairs);
+        this.sortKeyNamePairsByName(newKeyNamePairs);
+
+        // DELETE FROM STATE
+        this.setState( prevState => ({
+            sessionData: {
+                nextKey: prevState.sessionData.nextKey,
+                counter: prevState.sessionData.counter,
+                keyNamePairs: newKeyNamePairs
+            }
+        }), () => {
+            // DELETE LIST FROM DB
+            this.db.mutationDeleteList(this.state.keyNamePairMarkedForDeletion.key);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        });
+
+        this.hideDeleteListModal();
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
     // TO SEE IF THEY REALLY WANT TO DELETE THE LIST
@@ -188,7 +223,7 @@ class App extends React.Component {
                 <Statusbar 
                     currentList={this.state.currentList} />
                 <DeleteModal
-                    listKeyPairMarkedForDeletion={this.state.listKeyPairMarkedForDeletion}
+                    keyNamePairMarkedForDeletion={this.state.keyNamePairMarkedForDeletion}
                     deleteListCallback={this.deleteList}
                     confirmDeleteListCallback={this.confirmDeleteList}
                     hideDeleteListModalCallback={this.hideDeleteListModal}

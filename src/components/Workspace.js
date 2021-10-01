@@ -2,9 +2,35 @@ import React from "react";
 import ItemCard from "./ItemCard";
 
 export default class Workspace extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            moveStartIndex: -1,
+            moveEndIndex: -1
+        }
+    }
+
+    beginMove = (index) => {
+        this.setState({
+            moveStartIndex: index
+        });
+        console.log("Start: " + this.state.moveStartIndex);
+    }
+
+    endMove = (index) => {
+        this.setState({
+            moveEndIndex: index
+        });
+        console.log("End: " + this.state.moveEndIndex);
+        //this.props.moveItemCallback(this.state.moveStartIndex, this.state.moveEndIndex);
+    }
+
     render() {
         const { currentList,
-                renameListItemCallback} = this.props;
+                renameListItemCallback,
+                moveStartCallback,
+                moveEndCallback} = this.props;
         if (currentList) {
             return (
                 <div id="top5-workspace">
@@ -20,23 +46,33 @@ export default class Workspace extends React.Component {
                             <ItemCard
                             currentList={currentList}
                             index={0}
-                            renameListItemCallback={renameListItemCallback}/> 
+                            renameListItemCallback={renameListItemCallback}
+                            moveStartCallback={moveStartCallback}
+                            moveEndCallback={moveEndCallback}/>
                             <ItemCard
                             currentList={currentList}
                             index = {1}
-                            renameListItemCallback={renameListItemCallback}/> 
+                            renameListItemCallback={renameListItemCallback}
+                            moveStartCallback={moveStartCallback}
+                            moveEndCallback={moveEndCallback}/> 
                             <ItemCard
                             currentList={currentList}
                             index = {2}
-                            renameListItemCallback={renameListItemCallback}/>
+                            renameListItemCallback={renameListItemCallback}
+                            moveStartCallback={moveStartCallback}
+                            moveEndCallback={moveEndCallback}/>
                             <ItemCard
                             currentList={currentList}
                             index = {3}
-                            renameListItemCallback={renameListItemCallback}/>
+                            renameListItemCallback={renameListItemCallback}
+                            moveStartCallback={moveStartCallback}
+                            moveEndCallback={moveEndCallback}/>
                             <ItemCard
                             currentList={currentList}
                             index = {4}
-                            renameListItemCallback={renameListItemCallback}/>
+                            renameListItemCallback={renameListItemCallback}
+                            moveStartCallback={moveStartCallback}
+                            moveEndCallback={moveEndCallback}/>
                         </div>
                     </div>
                 </div>

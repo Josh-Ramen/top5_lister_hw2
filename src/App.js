@@ -25,7 +25,9 @@ class App extends React.Component {
         this.state = {
             currentList : null,
             sessionData : loadedSessionData,
-            keyNamePairMarkedForDeletion: null
+            keyNamePairMarkedForDeletion: null,
+            moveStartIndex: null,
+            moveEndIndex: null
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -51,9 +53,6 @@ class App extends React.Component {
         // SESSION DATA SO IT WILL BE IN OUR LIST OF LISTS
         let newKeyNamePair = { "key": newKey, "name": newName };
         let updatedPairs = [...this.state.sessionData.keyNamePairs, newKeyNamePair];
-        this.sortKeyNamePairsByName(updatedPairs);
-        console.log("Added a list. New keyNamePairs: ");
-        console.log(updatedPairs);
 
         // CHANGE THE APP STATE SO THAT IT THE CURRENT LIST IS
         // THIS NEW LIST AND UPDATE THE SESSION DATA SO THAT THE
@@ -109,8 +108,6 @@ class App extends React.Component {
         });
     }
     renameListItem = (index, newItem) => {
-        console.log("List " + this.state.currentList.name + " at " + index + " changing to " + newItem);
-        
         let currentList = this.state.currentList;
         currentList.items[index] = newItem;
         
@@ -148,8 +145,6 @@ class App extends React.Component {
         // WHICH LIST IT IS THAT THE USER WANTS TO
         // DELETE AND MAKE THAT CONNECTION SO THAT THE
         // NAME PROPERLY DISPLAYS INSIDE THE MODAL
-        console.log(keyNamePair);
-
         this.setState(({
             keyNamePairMarkedForDeletion: keyNamePair
         }), () => {
@@ -159,8 +154,6 @@ class App extends React.Component {
     }
     confirmDeleteList = () => {
         // WE MAY NEED TO RESET CURRENT LIST
-        console.log(this.state.keyNamePairMarkedForDeletion);
-
         if (this.state.currentList != null && this.state.keyNamePairMarkedForDeletion.key === this.state.currentList.key) {
             this.setState({
                 currentList: null
@@ -169,11 +162,7 @@ class App extends React.Component {
 
         // REMOVE KEY FROM KEY NAME PAIRS
         let newKeyNamePairs = [...this.state.sessionData.keyNamePairs];
-        console.log("Current keyNamePairs: ");
-        console.log(newKeyNamePairs);
         newKeyNamePairs.splice(newKeyNamePairs.indexOf(this.state.keyNamePairMarkedForDeletion), 1);
-        console.log("New keyNamePairs: ");
-        console.log(newKeyNamePairs);
         this.sortKeyNamePairsByName(newKeyNamePairs);
 
         // DELETE FROM STATE
@@ -202,6 +191,37 @@ class App extends React.Component {
         let modal = document.getElementById("delete-modal");
         modal.classList.remove("is-visible");
     }
+    moveStart = (index) => {
+        this.setState( ({
+            moveStartIndex: index
+        }), () => {
+            // ANY AFTER EFFECTS?
+            // NO FUCK OFF
+        });
+    }
+    moveEnd = (index) => {
+        this.setState( ({
+            moveEndIndex: index
+        }), () => {
+            // ANY AFTER EFFECTS?
+            if (this.state.moveStartIndex !== this.state.moveEndIndex) {
+                this.moveItem();
+            }
+        });
+    }
+    moveItem = () => {
+        let currentList = this.state.currentList;
+        currentList.items.splice(this.state.moveEndIndex, 0, currentList.items.splice(this.state.moveStartIndex, 1)[0]);
+        
+        this.setState(prevState => ({
+            currentList: prevState.currentList,
+        }), () => {
+            let list = this.db.queryGetList(this.state.currentList.key);
+            list = currentList;
+            this.db.mutationUpdateList(list);
+            this.db.mutationUpdateSessionData(this.state.sessionData);
+        })
+    }
     render() {
         return (
             <div id="app-root">
@@ -219,6 +239,8 @@ class App extends React.Component {
                 />
                 <Workspace
                     renameListItemCallback={this.renameListItem}
+                    moveStartCallback={this.moveStart}
+                    moveEndCallback={this.moveEnd}
                     currentList={this.state.currentList} />
                 <Statusbar 
                     currentList={this.state.currentList} />

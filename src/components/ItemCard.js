@@ -6,17 +6,17 @@ export default class ItemCard extends React.Component {
 
         this.state = {
             text: this.props.currentList.items[this.props.index],
-            editActive: false
+            editActive: false,
+            isDragging: false
         }
     }
     
     handleClick = (event) => {
-        console.log(this.state.text);
         if (event.detail === 2) {
             this.handleToggleEdit(event);
         }
     }
-    handleToggleEdit = (event) => {
+    handleToggleEdit = () => {
         this.setState({
             editActive: !this.state.editActive
         });
@@ -31,7 +31,7 @@ export default class ItemCard extends React.Component {
             this.handleBlur();
         }
     }
-    handleBlur = (event) => {
+    handleBlur = () => {
         let textValue = this.state.text;
         console.log("ItemCard handleBlur: " + textValue);
         this.handleRenameList(this.props.index, textValue);
@@ -41,6 +41,29 @@ export default class ItemCard extends React.Component {
         console.log(index);
         this.props.renameListItemCallback(index, text);
     }
+    handleDragStart = () => {
+        this.props.moveStartCallback(this.props.index);
+        if (!this.state.isDragging) {
+            this.setState({
+                isDragging: true
+            })
+        }
+    }
+    handleDragEnd = () => {
+        this.setState({
+            isDragging: false
+        })
+    }
+    handleDragOver = (event) => {
+        event.preventDefault();
+        
+    }
+    handleDragLeave = (event) => {
+        event.preventDefault();
+    }
+    handleDrop = () => {
+        this.props.moveEndCallback(this.props.index);
+    }
 
     render() {
         const {currentList, index} = this.props;
@@ -48,7 +71,8 @@ export default class ItemCard extends React.Component {
         if (this.state.editActive) {
             return (
                 <input
-                className="list-card"
+                autoFocus={true}
+                className="top5-item"
                 type='text'
                 onKeyPress={this.handleKeyPress}
                 onBlur={this.handleBlur}
@@ -58,9 +82,15 @@ export default class ItemCard extends React.Component {
                 )
         } else {
             return (
-                <div
+                
+                <div draggable
                 className="top5-item"
-                onClick={this.handleClick}>
+                onClick={this.handleClick}
+                onDragStart={this.handleDragStart}
+                onDragOver={this.handleDragOver}
+                onDragLeave={this.handleDragLeave}
+                onDragEnd={this.handleDragEnd}
+                onDrop={this.handleDrop}>
                     {currentList.items[index]}
                 </div>
             )

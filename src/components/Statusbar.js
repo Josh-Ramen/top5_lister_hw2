@@ -5,7 +5,7 @@ export default class Statusbar extends React.Component {
         const {currentList} = this.props;
         let name = "";
         if (currentList) {
-            name = currentList.name;
+            name = "Top 5 " + currentList.name;
         }
         return (
             <div id="top5-statusbar">

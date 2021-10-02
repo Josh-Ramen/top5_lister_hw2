@@ -5,6 +5,7 @@ import './App.css';
 import DBManager from './db/DBManager';
 import jsTPS from './tps/jsTPS';
 import ChangeItem_Transaction from './transactions/ChangeItem_Transaction';
+import MoveItem_Transaction from './transactions/MoveItem_Transaction';
 
 // THESE ARE OUR REACT COMPONENTS
 import DeleteModal from './components/DeleteModal';
@@ -262,13 +263,18 @@ class App extends React.Component {
         }), () => {
             // ANY AFTER EFFECTS?
             if (this.state.moveStartIndex !== this.state.moveEndIndex) {
-                this.moveItem();
+                this.addMoveItemTransaction();
             }
         });
     }
-    moveItem = () => {
+    addMoveItemTransaction = () => {
+        let transaction = new MoveItem_Transaction(this.moveItem, this.state.moveStartIndex, this.state.moveEndIndex);
+        this.tps.addTransaction(transaction);
+        this.updateUndoRedo();
+    }
+    moveItem = (start, end) => {
         let currentList = this.state.currentList;
-        currentList.items.splice(this.state.moveEndIndex, 0, currentList.items.splice(this.state.moveStartIndex, 1)[0]);
+        currentList.items.splice(end, 0, currentList.items.splice(start, 1)[0]);
         
         this.setState(prevState => ({
             currentList: prevState.currentList,

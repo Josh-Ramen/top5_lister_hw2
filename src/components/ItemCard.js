@@ -25,7 +25,6 @@ export default class ItemCard extends React.Component {
     handleUpdate = (event) => {
         let newText = event.target.value;
         this.setState({ text: newText });
-        console.log(this.state.text);
     }
     handleKeyPress = (event) => {
         if (event.code === "Enter") {
@@ -34,12 +33,10 @@ export default class ItemCard extends React.Component {
     }
     handleBlur = () => {
         let textValue = this.state.text;
-        console.log("ItemCard handleBlur: " + textValue);
         this.handleRenameList(this.props.index, textValue);
         this.handleToggleEdit();
     }
     handleRenameList = (index, text) => {
-        console.log(index);
         this.props.renameListItemCallback(index, text);
     }
     handleDragStart = () => {

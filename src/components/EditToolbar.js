@@ -8,12 +8,12 @@ export default class EditToolbar extends React.Component {
     }
     handleUndo = () => {
         if (this.props.canUndo) {
-            //this.props.undoCallback();
+            this.props.undoCallback();
         }
     }
     handleRedo = () => {
         if (this.props.canRedo) {
-            //this.props.redoCallback();
+            this.props.redoCallback();
         }
     }
     render() {
@@ -47,8 +47,8 @@ export default class EditToolbar extends React.Component {
                 </div>
                 <div
                     id='close-button'
-                    onClick = {this.handleClose}
-                    className={closeClass}>
+                    className={closeClass}
+                    onClick = {this.handleClose}>
                         &#x24E7;
                 </div>
             </div>

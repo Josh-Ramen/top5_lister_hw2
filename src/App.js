@@ -27,7 +27,10 @@ class App extends React.Component {
             sessionData : loadedSessionData,
             keyNamePairMarkedForDeletion: null,
             moveStartIndex: null,
-            moveEndIndex: null
+            moveEndIndex: null,
+            canClose: false,
+            canUndo: false,
+            canRedo: false
         }
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
@@ -125,7 +128,8 @@ class App extends React.Component {
         let newCurrentList = this.db.queryGetList(key);
         this.setState(prevState => ({
             currentList: newCurrentList,
-            sessionData: prevState.sessionData
+            sessionData: prevState.sessionData,
+            canClose: true
         }), () => {
             // ANY AFTER EFFECTS?
         });
@@ -135,7 +139,8 @@ class App extends React.Component {
         this.setState(prevState => ({
             currentList: null,
             keyNamePairMarkedForDeletion : prevState.keyNamePairMarkedForDeletion,
-            sessionData: this.state.sessionData
+            sessionData: this.state.sessionData,
+            canClose: false
         }), () => {
             // ANY AFTER EFFECTS?
         });
@@ -227,7 +232,10 @@ class App extends React.Component {
             <div id="app-root">
                 <Banner 
                     title='Top 5 Lister'
-                    closeCallback={this.closeCurrentList} />
+                    closeCallback={this.closeCurrentList}
+                    canClose={this.state.canClose}
+                    canUndo={this.state.canUndo}
+                    canRedo={this.state.canRedo}/>
                 <Sidebar
                     heading='Your Lists'
                     currentList={this.state.currentList}

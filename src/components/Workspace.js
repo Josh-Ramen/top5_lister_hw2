@@ -30,7 +30,8 @@ export default class Workspace extends React.Component {
         const { currentList,
                 renameListItemCallback,
                 moveStartCallback,
-                moveEndCallback} = this.props;
+                moveEndCallback,
+                editingCallback} = this.props;
         if (currentList) {
             return (
                 <div id="top5-workspace">
@@ -48,31 +49,36 @@ export default class Workspace extends React.Component {
                             index={0}
                             renameListItemCallback={renameListItemCallback}
                             moveStartCallback={moveStartCallback}
-                            moveEndCallback={moveEndCallback}/>
+                            moveEndCallback={moveEndCallback}
+                            editingCallback={editingCallback}/>
                             <ItemCard
                             currentList={currentList}
                             index = {1}
                             renameListItemCallback={renameListItemCallback}
                             moveStartCallback={moveStartCallback}
-                            moveEndCallback={moveEndCallback}/> 
+                            moveEndCallback={moveEndCallback}
+                            editingCallback={editingCallback}/> 
                             <ItemCard
                             currentList={currentList}
                             index = {2}
                             renameListItemCallback={renameListItemCallback}
                             moveStartCallback={moveStartCallback}
-                            moveEndCallback={moveEndCallback}/>
+                            moveEndCallback={moveEndCallback}
+                            editingCallback={editingCallback}/>
                             <ItemCard
                             currentList={currentList}
                             index = {3}
                             renameListItemCallback={renameListItemCallback}
                             moveStartCallback={moveStartCallback}
-                            moveEndCallback={moveEndCallback}/>
+                            moveEndCallback={moveEndCallback}
+                            editingCallback={editingCallback}/>
                             <ItemCard
                             currentList={currentList}
                             index = {4}
                             renameListItemCallback={renameListItemCallback}
                             moveStartCallback={moveStartCallback}
-                            moveEndCallback={moveEndCallback}/>
+                            moveEndCallback={moveEndCallback}
+                            editingCallback={editingCallback}/>
                         </div>
                     </div>
                 </div>

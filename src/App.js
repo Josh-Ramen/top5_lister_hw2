@@ -36,11 +36,13 @@ class App extends React.Component {
             moveEndIndex: null,
             canClose: false,
             canUndo: false,
-            canRedo: false
+            canRedo: false,
+            editing: false,
+            keysDown: []
         }
     }
     updateUndoRedo = () => {
-        if (this.tps.hasTransactionToUndo()) {
+        if (this.tps.hasTransactionToUndo() && !this.state.editing) {
             this.setState({
                 canUndo: true
             })
@@ -49,7 +51,7 @@ class App extends React.Component {
                 canUndo: false
             })
         }
-        if (this.tps.hasTransactionToRedo()) {
+        if (this.tps.hasTransactionToRedo() && !this.state.editing) {
             this.setState({
                 canRedo: true
             })
@@ -70,6 +72,13 @@ class App extends React.Component {
             this.tps.doTransaction();
             this.updateUndoRedo();
         }
+    }
+    editing = (isEditing) => {
+        this.setState(({
+            editing: isEditing
+        }), () => {
+            this.updateUndoRedo();
+        })
     }
     sortKeyNamePairsByName = (keyNamePairs) => {
         keyNamePairs.sort((keyPair1, keyPair2) => {
@@ -159,9 +168,11 @@ class App extends React.Component {
     }
     addChangeItemTransaction = (index, newItem) => {
         let oldItem = this.state.currentList.items[index];
-        let transaction = new ChangeItem_Transaction(this.renameListItem, index, oldItem, newItem);
-        this.tps.addTransaction(transaction);
-        this.updateUndoRedo();
+        if (oldItem !== newItem) {
+            let transaction = new ChangeItem_Transaction(this.renameListItem, index, oldItem, newItem);
+            this.tps.addTransaction(transaction);
+            this.updateUndoRedo();
+        } 
     }
     renameListItem = (index, newItem) => {
         let currentList = this.state.currentList;
@@ -178,14 +189,21 @@ class App extends React.Component {
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
     loadList = (key) => {
-        let newCurrentList = this.db.queryGetList(key);
-        this.setState(prevState => ({
-            currentList: newCurrentList,
-            sessionData: prevState.sessionData,
-            canClose: true
+        // MANUALLY CLOSE THE LIST
+        this.setState( ({
+            currentList: null
         }), () => {
-            // ANY AFTER EFFECTS?
-        });
+            // DO NORMAL LOADLIST STUFF
+            let newCurrentList = this.db.queryGetList(key);
+            this.setState(prevState => ({
+                currentList: newCurrentList,
+                sessionData: prevState.sessionData,
+                canClose: true
+            }), () => {
+                // ANY AFTER EFFECTS?
+            });
+        })
+        
     }
     // THIS FUNCTION BEGINS THE PROCESS OF CLOSING THE CURRENT LIST
     closeCurrentList = () => {
@@ -285,9 +303,37 @@ class App extends React.Component {
             this.db.mutationUpdateSessionData(this.state.sessionData);
         })
     }
+    handleKeyDown = (event) => {
+        if (event.key === "z" || event.key === "y" || event.key === "Control") {
+            if (!this.state.keysDown.includes(event.key)) {
+                let updatedKeys = [...this.state.keysDown, event.key];
+                this.setState(({
+                    keysDown: updatedKeys
+                }), () => {
+                    if (this.state.keysDown.includes("z") && this.state.keysDown.includes("Control")) {
+                        this.undo();
+                    }
+                    if (this.state.keysDown.includes("y") && this.state.keysDown.includes("Control")) {
+                        this.redo();
+                    }
+                });
+            }
+        }
+    }
+    handleKeyUp = (event) => {
+        if (event.key === "z" || event.key === "y" || event.key === "Control") {
+            if (this.state.keysDown.includes(event.key)) {
+                let updatedKeys = this.state.keysDown;
+                updatedKeys.splice(updatedKeys.indexOf(event.key), 1);
+                this.setState({
+                    keysDown: updatedKeys
+                })
+            }
+        }
+    }
     render() {
         return (
-            <div id="app-root">
+            <div id="app-root" tabIndex="-1" onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
                 <Banner 
                     title='Top 5 Lister'
                     closeCallback={this.closeCurrentList}
@@ -305,11 +351,13 @@ class App extends React.Component {
                     deleteListCallback={this.deleteList}
                     loadListCallback={this.loadList}
                     renameListCallback={this.renameList}
+                    editingCallback={this.editing}
                 />
                 <Workspace
                     renameListItemCallback={this.addChangeItemTransaction}
                     moveStartCallback={this.moveStart}
                     moveEndCallback={this.moveEnd}
+                    editingCallback={this.editing}
                     currentList={this.state.currentList} />
                 <Statusbar 
                     currentList={this.state.currentList} />

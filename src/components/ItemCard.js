@@ -11,15 +11,20 @@ export default class ItemCard extends React.Component {
             isDraggedOver: false
         }
     }
-    
+
     handleClick = (event) => {
+        if (event.detail === 1) {
+            console.log(this.state.text);
+        }
         if (event.detail === 2) {
             this.handleToggleEdit(event);
         }
     }
     handleToggleEdit = () => {
-        this.setState({
+        this.setState(({
             editActive: !this.state.editActive
+        }), () => {
+            this.props.editingCallback(this.state.editActive);
         });
     }
     handleUpdate = (event) => {

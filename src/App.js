@@ -75,6 +75,11 @@ class App extends React.Component {
             // IS AN AFTER EFFECT
             this.db.mutationCreateList(newList);
             this.db.mutationUpdateSessionData(this.state.sessionData);
+
+            // ALSO ENABLE THE CLOSE BUTTON
+            this.setState({
+                canClose: true
+            })
         });
     }
     renameList = (key, newName) => {
@@ -160,9 +165,7 @@ class App extends React.Component {
     confirmDeleteList = () => {
         // WE MAY NEED TO RESET CURRENT LIST
         if (this.state.currentList != null && this.state.keyNamePairMarkedForDeletion.key === this.state.currentList.key) {
-            this.setState({
-                currentList: null
-            })
+            this.closeCurrentList();
         }
 
         // REMOVE KEY FROM KEY NAME PAIRS

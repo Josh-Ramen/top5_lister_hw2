@@ -193,6 +193,10 @@ class App extends React.Component {
         this.setState( ({
             currentList: null
         }), () => {
+            // CLEAR ALL TRANSACTIONS
+            this.tps.clearAllTransactions();
+            this.updateUndoRedo();
+            
             // DO NORMAL LOADLIST STUFF
             let newCurrentList = this.db.queryGetList(key);
             this.setState(prevState => ({

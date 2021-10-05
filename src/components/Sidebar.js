@@ -2,6 +2,11 @@ import React from "react";
 import ListCard from "./ListCard";
 
 export default class Sidebar extends React.Component {
+    handleClick = () => {
+        if (!this.props.canClose) {
+            this.props.createNewListCallback();
+        }
+    }
     render() {
         let addClass = "top5-button";
         if (this.props.canClose) {
@@ -10,7 +15,6 @@ export default class Sidebar extends React.Component {
         const { heading,
                 currentList,
                 keyNamePairs,
-                createNewListCallback, 
                 deleteListCallback, 
                 loadListCallback,
                 renameListCallback,
@@ -21,7 +25,7 @@ export default class Sidebar extends React.Component {
                     <input 
                         type="button" 
                         id="add-list-button" 
-                        onClick={createNewListCallback}
+                        onClick={this.handleClick}
                         className={addClass} 
                         value="+" />
                     {heading}

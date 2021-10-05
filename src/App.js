@@ -352,6 +352,7 @@ class App extends React.Component {
                     loadListCallback={this.loadList}
                     renameListCallback={this.renameList}
                     editingCallback={this.editing}
+                    canClose={this.state.canClose}
                 />
                 <Workspace
                     renameListItemCallback={this.addChangeItemTransaction}

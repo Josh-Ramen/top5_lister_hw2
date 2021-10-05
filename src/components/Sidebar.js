@@ -3,6 +3,10 @@ import ListCard from "./ListCard";
 
 export default class Sidebar extends React.Component {
     render() {
+        let addClass = "top5-button";
+        if (this.props.canClose) {
+            addClass = addClass + "-disabled";
+        }
         const { heading,
                 currentList,
                 keyNamePairs,
@@ -18,7 +22,7 @@ export default class Sidebar extends React.Component {
                         type="button" 
                         id="add-list-button" 
                         onClick={createNewListCallback}
-                        className="top5-button" 
+                        className={addClass} 
                         value="+" />
                     {heading}
                 </div>

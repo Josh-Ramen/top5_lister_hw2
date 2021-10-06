@@ -27,6 +27,9 @@ class App extends React.Component {
         // GET THE SESSION DATA FROM OUR DATA MANAGER
         let loadedSessionData = this.db.queryGetSessionData();
 
+        // MAIN DIV REF
+        this.mainDiv = React.createRef();
+
         // SETUP THE INITIAL STATE
         this.state = {
             currentList : null,
@@ -41,6 +44,9 @@ class App extends React.Component {
             keysDown: []
         }
     }
+    componentDidMount() {
+        this.mainDiv.current.focus();
+    }    
     updateUndoRedo = () => {
         if (this.tps.hasTransactionToUndo() && !this.state.editing) {
             this.setState({
@@ -162,8 +168,8 @@ class App extends React.Component {
             list.name = newName;
             this.db.mutationUpdateList(list);
             this.db.mutationUpdateSessionData(this.state.sessionData);
-            this.tps.clearAllTransactions();
-            this.updateUndoRedo();
+
+            this.mainDiv.current.focus();
         });
     }
     addChangeItemTransaction = (index, newItem) => {
@@ -185,6 +191,8 @@ class App extends React.Component {
             list.items[index] = newItem;
             this.db.mutationUpdateList(list);
             this.db.mutationUpdateSessionData(this.state.sessionData);
+
+            this.mainDiv.current.focus();
         })
     }
     // THIS FUNCTION BEGINS THE PROCESS OF LOADING A LIST FOR EDITING
@@ -337,7 +345,7 @@ class App extends React.Component {
     }
     render() {
         return (
-            <div id="app-root" tabIndex="-1" onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
+            <div id="app-root" tabIndex="0" ref={this.mainDiv} onKeyDown={this.handleKeyDown} onKeyUp={this.handleKeyUp}>
                 <Banner 
                     title='Top 5 Lister'
                     closeCallback={this.closeCurrentList}

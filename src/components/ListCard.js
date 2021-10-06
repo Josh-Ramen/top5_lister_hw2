@@ -18,11 +18,13 @@ export default class ListCard extends React.Component {
         }
     }
     handleLoadList = (event) => {
-        let listKey = event.target.id;
-        if (listKey.startsWith("list-card-text-")) {
-            listKey = listKey.substring("list-card-text-".length);
+        if (!this.props.selected) {
+            let listKey = event.target.id;
+            if (listKey.startsWith("list-card-text-")) {
+                listKey = listKey.substring("list-card-text-".length);
+            }
+            this.props.loadListCallback(listKey);
         }
-        this.props.loadListCallback(listKey);
     }
     handleDeleteList = (event) => {
         event.stopPropagation();
